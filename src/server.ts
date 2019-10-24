@@ -3,12 +3,18 @@ import express from "express";
 import mongoose from "mongoose";
 import {deletePokemon, getPokemon, getPokemons, postPokemons, putPokemon} from "./controllers/pokemon";
 import {postTrainers, getTrainers} from "./controllers/trainer";
+
+import passport from "passport";
+import {isAuthenticated} from "./controllers/auth";
+
 const app = express();
 
 // Use the body-parser package in our application
 app.use(bodyParser.urlencoded({
     extended: true
   }));
+// Use the passport package in our application
+app.use(passport.initialize());
 
 const port = process.env.PORT || 3000;
 const router = express.Router();
@@ -20,17 +26,17 @@ router.get("/", (req, res) => {
 });
 
 router.route("/pokemons")
-  .post(postPokemons)
-  .get(getPokemons);
+  .post(isAuthenticated, postPokemons)
+  .get(isAuthenticated, getPokemons);
 
 router.route("/pokemons/:pokemon_id")
-  .get(getPokemon)
-  .put(putPokemon)
-  .delete(deletePokemon);
+  .get(isAuthenticated, getPokemon)
+  .put(isAuthenticated, putPokemon)
+  .delete(isAuthenticated, deletePokemon);
 
 router.route("/trainers")
   .post(postTrainers)
-  .get(getTrainers);
+  .get(isAuthenticated, getTrainers);
 
 app.use("/api", router);
 
