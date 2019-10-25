@@ -34,11 +34,11 @@ app.use(passport.initialize());
 const port = process.env.PORT || 3000;
 const router = express.Router();
 
-mongoose.connect("mongodb://localhost:27017/pokemonstorage");
+mongoose.connect("mongodb://localhost:27017/pokemonstorage",{ useNewUrlParser: true,  useUnifiedTopology: true, useCreateIndex: true, });
 
-// router.get("/", (req, res) => {
-//     res.json({ message: "You are running dangerously low on pokemon!" });
-// });
+router.get("/", (req, res) => {
+    res.json({ message: "You are running dangerously low on pokemon!" });
+});
 
 router.route("/pokemons")
   .post(isAuthenticated, postPokemons)

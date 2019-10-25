@@ -1,4 +1,5 @@
 import { Document, Schema, model } from "mongoose";
+import datePlugins from "../tools/plugin";
 
 export interface IClient extends Document {
     name: string;
@@ -13,5 +14,7 @@ const ClientSchema = new Schema({
     secret: { type: String, required: true },
     trainerId: { type: String, required: true }
 });
+
+ClientSchema.plugin(datePlugins)
 
 export default model<IClient>("Client", ClientSchema);

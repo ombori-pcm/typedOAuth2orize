@@ -1,5 +1,6 @@
 import bcrypt from "bcrypt-nodejs";
 import {Document, Schema, HookNextFunction, model} from "mongoose";
+import datePlugins from "../tools/plugin";
 
 export interface ITrainer extends Document {
   username: string;
@@ -39,6 +40,8 @@ function saveNext(next: HookNextFunction) {
     });
   });
 }
+
+TrainerSchema.plugin(datePlugins);
 
 TrainerSchema.pre("save", saveNext);
 
