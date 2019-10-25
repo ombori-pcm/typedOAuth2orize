@@ -10,7 +10,7 @@ passport.use(new BasicStrategy(
 
       if (!trainer) { return callback(null, false); }
 
-      trainer.verifyPassword(password, (error, isMatch) => {
+      trainer.verifyPassword(password, (error: Error, isMatch: boolean) => {
         if (error) { return callback(error); }
 
         if (!isMatch) { return callback(null, false); }

@@ -1,16 +1,13 @@
 import Pokemon from "../models/pokemon";
+import { RequestHandler } from "express";
 
-// Create endpoint /api/beers for POSTS
-export const postPokemons = ( (req, res) => {
-  // Create a new instance of the Beer model
+export const postPokemons:RequestHandler = ( (req, res) => {
   const pokemon = new Pokemon();
 
-  // Set the beer properties that came from the POST data
   pokemon.name = req.body.name;
   pokemon.type = req.body.type;
   pokemon.quantity = req.body.quantity;
 
-  // Save the beer and check for errors
   pokemon.save( (err) => {
     if (err) {
       res.send(err);
@@ -20,8 +17,7 @@ export const postPokemons = ( (req, res) => {
   });
 });
 
-export const getPokemons = ( (req, res) => {
-    // Use the Beer model to find all beer
+export const getPokemons:RequestHandler = ( (req, res) => {
     Pokemon.find( (err, pokemons) => {
       if (err) {
         res.send(err);
@@ -30,9 +26,7 @@ export const getPokemons = ( (req, res) => {
     });
   });
 
-  // Create endpoint /api/beers/:beer_id for GET
-export const getPokemon = ((req, res) => {
-    // Use the Beer model to find a specific beer
+export const getPokemon:RequestHandler = ((req, res) => {
     Pokemon.findById(req.params.pokemon_id, (err, pokemon) => {
       if (err) {
         res.send(err);
@@ -41,16 +35,13 @@ export const getPokemon = ((req, res) => {
       res.json(pokemon);
     });
   });
-export const putPokemon = ((req, res) => {
-  // Use the Beer model to find a specific beer
+export const putPokemon:RequestHandler = ((req, res) => {
   Pokemon.findById(req.params.beer_id, (err, pokemon) => {
     if (err) {
       res.send(err);
     }
-    // Update the existing beer quantity
     pokemon.quantity = req.body.quantity;
 
-    // Save the beer and check for errors
     pokemon.save((error) => {
       if (error) {
         res.send(error);
@@ -61,13 +52,12 @@ export const putPokemon = ((req, res) => {
   });
 });
 
-export const deletePokemon = ( (req, res) => {
-  // Use the Beer model to find a specific beer and remove it
+export const deletePokemon:RequestHandler = ( (req, res) => {
   Pokemon.findByIdAndRemove(req.params.beer_id, (err) => {
     if (err) {
       res.send(err);
     }
 
-    res.json({ message: "Beer removed from the locker!" });
+    res.json({ message: "Pokemon removed from the storage!" });
   });
 });

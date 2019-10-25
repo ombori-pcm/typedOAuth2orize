@@ -1,5 +1,5 @@
 import bcrypt from "bcrypt-nodejs";
-import {Document, Schema, Model, model} from "mongoose";
+import {Document, Schema, HookNextFunction, model} from "mongoose";
 
 export interface ITrainer extends Document {
   username: string;
@@ -10,7 +10,8 @@ export interface ITrainerModel extends ITrainer, Document {
   verifyPassword(password: string, cb: any): void;
 }
 
-// Define our user schema
+export type IVerifyPasswordNextFunction = (err: Error, isMatch?: boolean) => void;
+
 const TrainerSchema = new Schema({
     password: {
         required: true,
@@ -23,13 +24,11 @@ const TrainerSchema = new Schema({
   },
 });
 
-function cb(next) {
+function saveNext(next: HookNextFunction) {
   const trainer = this;
 
-  // Break out if the password hasn't changed
   if (!trainer.isModified("password")) { return next(); }
 
-  // Password changed so we need to hash it
   bcrypt.genSalt(5, (err, salt) => {
     if (err) { return next(err); }
 
@@ -41,10 +40,9 @@ function cb(next) {
   });
 }
 
-// Execute before each user.save() call
-TrainerSchema.pre("save", cb);
+TrainerSchema.pre("save", saveNext);
 
-function verifyPassword(password, next) {
+function verifyPassword(password: string, next: IVerifyPasswordNextFunction) {
   bcrypt.compare(password, this.password, (err, isMatch) => {
     if (err) { return next(err); }
     next(null, isMatch);
@@ -53,5 +51,4 @@ function verifyPassword(password, next) {
 
 TrainerSchema.methods.verifyPassword = verifyPassword;
 
-// Export the Mongoose model
 export default model<ITrainerModel>("Trainer", TrainerSchema);
